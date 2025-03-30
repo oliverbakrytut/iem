@@ -1,0 +1,152 @@
+from flask import Flask, render_template_string, request
+
+app = Flask(__name__)
+
+# Template HTML dengan CSS dan fitur tambahan
+homepage_template = """
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homepage</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            line-height: 1.6;
+            color: #333;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+        }
+        header h1 {
+            font-size: 2.5rem;
+        }
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            padding: 1rem 0;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        nav a:hover {
+            color: #3498db;
+        }
+        main {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        section {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background-color: #2980b9;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        input, textarea {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        footer {
+            text-align: center;
+            padding: 1rem;
+            background-color: #2c3e50;
+            color: white;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Selamat Datang di Homepage Saya</h1>
+        <nav>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Tentang</a></li>
+                <li><a href="#">Kontak</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section>
+            <h2>Konten Utama</h2>
+            <p>Ini adalah halaman utama yang dibuat dengan Python dan Flask.</p>
+            <p>Pesan dari Python: <strong>{{ message }}</strong></p>
+            <a href="#" class="button">Klik Saya!</a>
+        </section>
+        <section>
+            <h2>Form Kontak</h2>
+            <form method="POST" action="/">
+                <input type="text" name="name" placeholder="Nama Anda" required>
+                <textarea name="message" placeholder="Pesan Anda" rows="4" required></textarea>
+                <input type="submit" value="Kirim" class="button">
+            </form>
+            {% if submitted %}
+                <p style="color: green; margin-top: 1rem;">Terima kasih, {{ submitted_name }}! Pesan Anda: "{{ submitted_message }}"</p>
+            {% endif %}
+        </section>
+    </main>
+    <footer>
+        <p>© 2025 Dibuat dengan Python</p>
+    </footer>
+</body>
+</html>
+"""
+
+@app.route('/', methods=['GET', 'POST'])
+def home():
+    message = "Halo dari Python!"
+    submitted = False
+    submitted_name = ""
+    submitted_message = ""
+
+    if request.method == 'POST':
+        submitted_name = request.form['name']
+        submitted_message = request.form['message']
+        submitted = True
+
+    return render_template_string(
+        homepage_template,
+        message=message,
+        submitted=submitted,
+        submitted_name=submitted_name,
+        submitted_message=submitted_message
+    )
+
+if __name__ == '__main__':
+    app.run(debug=True)
